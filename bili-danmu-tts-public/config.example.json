@@ -1,0 +1,49 @@
+{
+  "room": {
+    "room_id": "",
+    "cookie": ""
+  },
+  "tts": {
+    "engine": "aliyun",
+    "aliyun": {
+      "api_key": "",
+      "model": "cosyvoice-v3-flash",
+      "voice": "longanyang"
+    },
+    "doubao": {
+      "appid": "",
+      "access_token": "",
+      "cluster": "volcano_tts",
+      "voice_type": "zh_female_vv_mars_bigtts",
+      "endpoint": "https://openspeech.bytedance.com/api/v1/tts"
+    },
+    "speed": 1.0,
+    "volume": 0.9
+  },
+  "broadcast": {
+    "read_danmaku": true,
+    "read_gift": true,
+    "read_sc": true,
+    "read_follow": true,
+    "read_enter": false,
+    "ignore_free_gift": false,
+    "enter_cooldown": 600,
+    "enter_per_min": 6,
+    "follow_per_min": 10,
+    "read_username": true,
+    "username_suffix": "说，",
+    "max_chars": 60,
+    "max_queue": 8,
+    "min_interval": 0.25,
+    "skip_emoji_only": true,
+    "mute_keywords": []
+  },
+  "log": {
+    "enabled": true,
+    "dir": "logs"
+  },
+  "ui": {
+    "max_lines": 300,
+    "always_on_top": false
+  }
+}

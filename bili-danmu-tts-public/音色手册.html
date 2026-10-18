@@ -1,0 +1,2305 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>音色手册 · B站弹幕播报机</title>
+<style>
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: #f6f7fb; color: #23242a;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+               "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
+  font-size: 15px; line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 22px 80px; }
+
+/* 顶部 */
+header {
+  background: linear-gradient(135deg, #fb7299 0%, #ff9bb8 55%, #00a1d6 190%);
+  color: #fff; padding: 40px 0 34px; margin-bottom: 26px;
+}
+header .wrap { padding-bottom: 0; }
+header h1 { margin: 0 0 10px; font-size: 27px; letter-spacing: .4px; font-weight: 700; }
+header p { margin: 0; opacity: .94; font-size: 14.5px; max-width: 760px; }
+header .meta { margin-top: 14px; font-size: 13px; opacity: .82; }
+
+/* 使用说明 */
+.howto {
+  background: #fff; border-radius: 14px; padding: 18px 22px; margin-bottom: 22px;
+  border: 1px solid #ebecf2; box-shadow: 0 1px 2px rgba(20,20,40,.03);
+}
+.howto h2 { margin: 0 0 12px; font-size: 15.5px; }
+.howto ol { margin: 0; padding-left: 20px; }
+.howto li { margin: 5px 0; color: #4a4c56; }
+.howto code {
+  background: #f2f3f9; padding: 1px 6px; border-radius: 5px;
+  font-family: "Cascadia Code", Consolas, monospace; font-size: 12.5px; color: #d6336c;
+}
+
+/* 工具条 */
+.toolbar {
+  position: sticky; top: 0; z-index: 20; background: rgba(246,247,251,.94);
+  backdrop-filter: blur(10px); padding: 12px 0; margin-bottom: 8px;
+  border-bottom: 1px solid #e9eaf1;
+}
+.toolbar .inner { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+#q {
+  flex: 1 1 260px; min-width: 200px; padding: 9px 14px; font-size: 14.5px;
+  border: 1px solid #dfe0e9; border-radius: 10px; background: #fff;
+  font-family: inherit; color: inherit; outline: none; transition: .16s;
+}
+#q:focus { border-color: #fb7299; box-shadow: 0 0 0 3px rgba(251,114,153,.13); }
+.btn {
+  padding: 8px 15px; border: 1px solid #dfe0e9; background: #fff; color: #4a4c56;
+  border-radius: 10px; cursor: pointer; font-size: 14px; font-family: inherit;
+  transition: .16s; white-space: nowrap;
+}
+.btn:hover { border-color: #fb7299; color: #fb7299; }
+.btn.on { background: #fb7299; border-color: #fb7299; color: #fff; }
+.count { font-size: 13px; color: #8b8d99; margin-left: auto; }
+
+/* 区块 */
+section { margin-top: 30px; }
+.stitle {
+  display: flex; align-items: baseline; gap: 10px; margin: 0 0 4px;
+  font-size: 17px; font-weight: 700;
+}
+.stitle span { font-size: 13px; font-weight: 400; color: #8b8d99; }
+.snote {
+  margin: 0 0 16px; font-size: 13.5px; color: #6b6d79;
+  border-left: 3px solid #00a1d6; padding-left: 11px;
+}
+
+/* 卡片网格 */
+.grid {
+  display: grid; gap: 13px;
+  grid-template-columns: repeat(auto-fill, minmax(322px, 1fr));
+}
+.card {
+  background: #fff; border: 1px solid #ebecf2; border-radius: 14px;
+  padding: 15px 16px 13px; transition: transform .16s, box-shadow .16s, border-color .16s;
+  display: flex; flex-direction: column;
+}
+.card:hover {
+  transform: translateY(-2px); border-color: #f3c3d2;
+  box-shadow: 0 6px 20px rgba(251,114,153,.10);
+}
+.card.rec3 { border-color: #fbd3de; background: linear-gradient(180deg,#fffbfd,#fff 44%); }
+.chead { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.chead h3 { margin: 0; font-size: 15px; font-weight: 650; letter-spacing: .2px; }
+.stars { font-size: 11.5px; color: #fb7299; letter-spacing: 1px; flex: none; }
+
+/* 音色 ID 按钮 */
+.vid {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  width: 100%; margin: 9px 0 9px; padding: 7px 10px; cursor: pointer;
+  background: #f4f5fa; border: 1px solid #e8e9f1; border-radius: 9px;
+  transition: .16s; text-align: left; font-family: inherit;
+}
+.vid:hover { background: #eef0f8; border-color: #d9dbe8; }
+.vid:active { transform: scale(.99); }
+.vid code {
+  font-family: "Cascadia Code", Consolas, "Courier New", monospace;
+  font-size: 12.4px; color: #3b5bdb; word-break: break-all; line-height: 1.4;
+  user-select: all; -webkit-user-select: all;
+}
+.vid .cp {
+  flex: none; font-size: 11.5px; color: #8b8d99; padding: 2px 8px;
+  border-radius: 6px; background: #fff; border: 1px solid #e4e5ee;
+  transition: .16s;
+}
+.vid:hover .cp { color: #fb7299; border-color: #f7c2d2; }
+.vid.done { background: #e7f8ef; border-color: #b7e7cc; }
+.vid.done .cp { color: #0f9960; border-color: #b7e7cc; }
+
+.desc { margin: 0 0 11px; font-size: 13.2px; color: #5c5e6a; line-height: 1.6; flex: 1; }
+.tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.tag {
+  font-size: 11.5px; padding: 2px 8px; border-radius: 20px;
+  background: #f2f3f9; color: #6b6d79; border: 1px solid #e9eaf1;
+}
+.tag.g-f { background: #fff0f5; color: #d6336c; border-color: #fadce7; }
+.tag.g-m { background: #eef4ff; color: #3b5bdb; border-color: #dde6ff; }
+.tag.g-k { background: #fff8e6; color: #b7791f; border-color: #f7ebc9; }
+
+/* 提示条 */
+.tip {
+  margin: 22px 0 0; padding: 14px 18px; border-radius: 12px;
+  background: #fff9ec; border: 1px solid #f6e8c4; font-size: 13.5px; color: #7a5c14;
+}
+.tip b { color: #8a5a00; }
+
+/* 复制浮层 */
+#toast {
+  position: fixed; left: 50%; bottom: 40px; transform: translate(-50%, 20px);
+  background: #23242a; color: #fff; padding: 10px 20px; border-radius: 10px;
+  font-size: 13.5px; opacity: 0; pointer-events: none; transition: .24s;
+  z-index: 100; box-shadow: 0 8px 26px rgba(0,0,0,.2);
+}
+#toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+.empty { padding: 46px 0; text-align: center; color: #a0a2ae; font-size: 14px; }
+@media (max-width: 560px) {
+  .grid { grid-template-columns: 1fr; }
+  header h1 { font-size: 22px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1>音色手册</h1>
+    <p>你现在在用的两个模型，能用的音色全在这儿。点一下音色 ID 就复制，粘到设置里对应那个框，点保存就生效。</p>
+    <div class="meta">共 124 个音色 · 全部用你的密钥实测跑通 · 数据来自阿里云与火山引擎官方文档</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<div class="howto">
+  <h2>怎么用</h2>
+  <ol>
+    <li>主界面右上角点 <code>设置</code></li>
+    <li>用阿里云：进「阿里云百炼」页，把 ID 粘到 <code>音色</code> 框</li>
+    <li>用豆包：进「豆包（火山）」页，把 ID 粘到 <code>音色 id</code> 框</li>
+    <li>点 <code>保存</code>，回主界面顶上切一下引擎，重连直播间就能听到</li>
+  </ol>
+</div>
+
+<div class="toolbar">
+  <div class="inner wrap" style="padding:0">
+    <input id="q" type="search" placeholder="搜音色名 / ID / 特色，比如「御姐」「甜」「longan」">
+    <button class="btn on" data-v="all">全部</button>
+    <button class="btn" data-v="aliyun">阿里云</button>
+    <button class="btn" data-v="doubao">豆包</button>
+    <button class="btn" id="onlyRec">只看推荐 ★★★</button>
+    <span class="count" id="cnt"></span>
+  </div>
+</div>
+
+<section id="sec-aliyun">
+  <h2 class="stitle">阿里云 · cosyvoice-v3-flash <span>21 个中文音色</span></h2>
+  <p class="snote">模型框填 <code>cosyvoice-v3-flash</code>，音色就从这个表里挑。名字都是「龙 XX」，是阿里的中文音色体系。</p>
+  <div class="grid">
+<article class="card rec3" data-vendor="aliyun"
+  data-text="longanyang 龙安洋 阳光大男孩，声音干净有活力，中文英文都行，是 v3-flash 的标杆音色 社交陪伴">
+  <div class="chead">
+    <h3>龙安洋</h3>
+    <span class="stars" title="弹幕播报推荐度">★★★</span>
+  </div>
+  <button class="vid" data-id="longanyang" title="点击复制">
+    <code>longanyang</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">阳光大男孩，声音干净有活力，中文英文都行，是 v3-flash 的标杆音色</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">社交陪伴</span>
+  </div>
+</article>
+<article class="card rec3" data-vendor="aliyun"
+  data-text="longanhuan 龙安欢 欢脱元气女，语调轻快，情绪饱满 社交陪伴">
+  <div class="chead">
+    <h3>龙安欢</h3>
+    <span class="stars" title="弹幕播报推荐度">★★★</span>
+  </div>
+  <button class="vid" data-id="longanhuan" title="点击复制">
+    <code>longanhuan</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">欢脱元气女，语调轻快，情绪饱满</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">社交陪伴</span>
+  </div>
+</article>
+<article class="card rec3" data-vendor="aliyun"
+  data-text="longanhuan_v3 龙安欢（V3） 欢脱元气女的升级版，还能说粤语、东北、河南、湖南、陕西、山东、四川、安徽 8 种方言 社交陪伴">
+  <div class="chead">
+    <h3>龙安欢（V3）</h3>
+    <span class="stars" title="弹幕播报推荐度">★★★</span>
+  </div>
+  <button class="vid" data-id="longanhuan_v3" title="点击复制">
+    <code>longanhuan_v3</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">欢脱元气女的升级版，还能说粤语、东北、河南、湖南、陕西、山东、四川、安徽 8 种方言</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">社交陪伴</span>
+  </div>
+</article>
+<article class="card" data-vendor="aliyun"
+  data-text="longhuhu_v3 龙呼呼 天真烂漫的小女孩，六到十岁的童音，适合卖萌 童声">
+  <div class="chead">
+    <h3>龙呼呼</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="longhuhu_v3" title="点击复制">
+    <code>longhuhu_v3</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">天真烂漫的小女孩，六到十岁的童音，适合卖萌</p>
+  <div class="tags">
+    <span class="tag g-k">童</span>
+    <span class="tag">童声</span>
+  </div>
+</article>
+<article class="card" data-vendor="aliyun"
+  data-text="longpaopao_v3 龙泡泡 飞天泡泡音，带点卡通感的儿童音 童声">
+  <div class="chead">
+    <h3>龙泡泡</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="longpaopao_v3" title="点击复制">
+    <code>longpaopao_v3</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">飞天泡泡音，带点卡通感的儿童音</p>
+  <div class="tags">
+    <span class="tag g-k">童</span>
+    <span class="tag">童声</span>
+  </div>
+</article>
+<article class="card" data-vendor="aliyun"
+  data-text="longjielidou_v3 龙杰力豆 阳光顽皮小男孩，十岁左右 童声">
+  <div class="chead">
+    <h3>龙杰力豆</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="longjielidou_v3" title="点击复制">
+    <code>longjielidou_v3</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">阳光顽皮小男孩，十岁左右</p>
+  <div class="tags">
+    <span class="tag g-k">童</span>
+    <span class="tag">童声</span>
+  </div>
+</article>
+<article class="card" data-vendor="aliyun"
+  data-text="longxian_v3 龙仙 豪放可爱女，十二岁，有点大大咧咧 童声">
+  <div class="chead">
+    <h3>龙仙</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="longxian_v3" title="点击复制">
+    <code>longxian_v3</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">豪放可爱女，十二岁，有点大大咧咧</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">童声</span>
+  </div>
+</article>
+<article class="card" data-vendor="aliyun"
+  data-text="longling_v3 龙铃 稚气呆板女，十岁，说话平平的有点呆萌 童声">
+  <div class="chead">
+    <h3>龙铃</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="longling_v3" title="点击复制">
+    <code>longling_v3</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">稚气呆板女，十岁，说话平平的有点呆萌</p>
+  <div class="tags">
+    <span class="tag g-k">童</span>
+    <span class="tag">童声</span>
+  </div>
+</article>
+<article class="card" data-vendor="aliyun"
+  data-text="longshanshan_v3 龙闪闪 戏剧化童声，念故事有起伏，适合有声书 童声">
+  <div class="chead">
+    <h3>龙闪闪</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="longshanshan_v3" title="点击复制">
+    <code>longshanshan_v3</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">戏剧化童声，念故事有起伏，适合有声书</p>
+  <div class="tags">
+    <span class="tag g-k">童</span>
+    <span class="tag">童声</span>
+  </div>
+</article>
+<article class="card" data-vendor="aliyun"
+  data-text="longniuniu_v3 龙牛牛 阳光男童声，干净的小男孩 童声">
+  <div class="chead">
+    <h3>龙牛牛</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="longniuniu_v3" title="点击复制">
+    <code>longniuniu_v3</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">阳光男童声，干净的小男孩</p>
+  <div class="tags">
+    <span class="tag g-k">童</span>
+    <span class="tag">童声</span>
+  </div>
+</article>
+<article class="card" data-vendor="aliyun"
+  data-text="longjiaxin_v3 龙嘉欣 优雅粤语女，三十岁上下，讲粤语 方言">
+  <div class="chead">
+    <h3>龙嘉欣</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="longjiaxin_v3" title="点击复制">
+    <code>longjiaxin_v3</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">优雅粤语女，三十岁上下，讲粤语</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">方言</span>
+  </div>
+</article>
+<article class="card" data-vendor="aliyun"
+  data-text="longjiayi_v3 龙嘉怡 知性粤语女，二十多岁，讲粤语 方言">
+  <div class="chead">
+    <h3>龙嘉怡</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="longjiayi_v3" title="点击复制">
+    <code>longjiayi_v3</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">知性粤语女，二十多岁，讲粤语</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">方言</span>
+  </div>
+</article>
+<article class="card" data-vendor="aliyun"
+  data-text="longanyue_v3 龙安粤 欢脱粤语男，二十多岁，讲粤语 方言">
+  <div class="chead">
+    <h3>龙安粤</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="longanyue_v3" title="点击复制">
+    <code>longanyue_v3</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">欢脱粤语男，二十多岁，讲粤语</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">方言</span>
+  </div>
+</article>
+<article class="card" data-vendor="aliyun"
+  data-text="longlaotie_v3 龙老铁 东北直率男，一开口就是大碴子味儿 方言">
+  <div class="chead">
+    <h3>龙老铁</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="longlaotie_v3" title="点击复制">
+    <code>longlaotie_v3</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">东北直率男，一开口就是大碴子味儿</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">方言</span>
+  </div>
+</article>
+<article class="card" data-vendor="aliyun"
+  data-text="longshange_v3 龙陕哥 原味陕北男，黄土高坡口音 方言">
+  <div class="chead">
+    <h3>龙陕哥</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="longshange_v3" title="点击复制">
+    <code>longshange_v3</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">原味陕北男，黄土高坡口音</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">方言</span>
+  </div>
+</article>
+<article class="card" data-vendor="aliyun"
+  data-text="longanmin_v3 龙安闽 清纯萝莉女，讲闽南话 方言">
+  <div class="chead">
+    <h3>龙安闽</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="longanmin_v3" title="点击复制">
+    <code>longanmin_v3</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">清纯萝莉女，讲闽南话</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">方言</span>
+  </div>
+</article>
+<article class="card" data-vendor="aliyun"
+  data-text="longfei_v3 龙飞 热血磁性男，朗诵腔，念诗念台词很有气势 朗诵">
+  <div class="chead">
+    <h3>龙飞</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="longfei_v3" title="点击复制">
+    <code>longfei_v3</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">热血磁性男，朗诵腔，念诗念台词很有气势</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">朗诵</span>
+  </div>
+</article>
+<article class="card" data-vendor="aliyun"
+  data-text="longyingxiao_v3 龙应笑 清甜推销女，二十出头，语速偏快有精神 客服">
+  <div class="chead">
+    <h3>龙应笑</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="longyingxiao_v3" title="点击复制">
+    <code>longyingxiao_v3</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">清甜推销女，二十出头，语速偏快有精神</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">客服</span>
+  </div>
+</article>
+<article class="card" data-vendor="aliyun"
+  data-text="longyingxun_v3 龙应询 年轻青涩男，二十出头，像刚入职的小哥 客服">
+  <div class="chead">
+    <h3>龙应询</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="longyingxun_v3" title="点击复制">
+    <code>longyingxun_v3</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">年轻青涩男，二十出头，像刚入职的小哥</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">客服</span>
+  </div>
+</article>
+<article class="card" data-vendor="aliyun"
+  data-text="longyingjing_v3 龙应静 低调冷静女，声音平稳不抢戏 客服">
+  <div class="chead">
+    <h3>龙应静</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="longyingjing_v3" title="点击复制">
+    <code>longyingjing_v3</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">低调冷静女，声音平稳不抢戏</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">客服</span>
+  </div>
+</article>
+<article class="card rec3" data-vendor="aliyun"
+  data-text="longyingling_v3 龙应聆 温和共情女，语气很软，听着舒服 客服">
+  <div class="chead">
+    <h3>龙应聆</h3>
+    <span class="stars" title="弹幕播报推荐度">★★★</span>
+  </div>
+  <button class="vid" data-id="longyingling_v3" title="点击复制">
+    <code>longyingling_v3</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">温和共情女，语气很软，听着舒服</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">客服</span>
+  </div>
+</article>
+  </div>
+</section>
+
+<section id="sec-doubao">
+  <h2 class="stitle">豆包 · 语音合成 2.0 <span>103 个音色</span></h2>
+  <p class="snote">你开通的是 2.0，所以音色 ID 都是 <code>_uranus_bigtts</code> 或 <code>ICL_uranus_</code> 结尾。填 1.0 那种短名（比如 <code>zh_female_qingxin</code>）会直接报 3001。</p>
+  <div class="grid">
+<article class="card rec3" data-vendor="doubao"
+  data-text="zh_female_vv_uranus_bigtts Vivi 2.0 豆包 2.0 的王牌女声，清亮自然，支持 30 多种语言和 8 种方言，闭眼选它不会错 通用">
+  <div class="chead">
+    <h3>Vivi 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★★</span>
+  </div>
+  <button class="vid" data-id="zh_female_vv_uranus_bigtts" title="点击复制">
+    <code>zh_female_vv_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">豆包 2.0 的王牌女声，清亮自然，支持 30 多种语言和 8 种方言，闭眼选它不会错</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card rec3" data-vendor="doubao"
+  data-text="zh_female_xiaohe_uranus_bigtts 小何 2.0 王牌女声二号，比 Vivi 更清透一点，播报感强 通用">
+  <div class="chead">
+    <h3>小何 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★★</span>
+  </div>
+  <button class="vid" data-id="zh_female_xiaohe_uranus_bigtts" title="点击复制">
+    <code>zh_female_xiaohe_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">王牌女声二号，比 Vivi 更清透一点，播报感强</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card rec3" data-vendor="doubao"
+  data-text="zh_male_m191_uranus_bigtts 云舟 2.0 王牌男声，中低音沉稳，适合讲解和旁白 通用">
+  <div class="chead">
+    <h3>云舟 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★★</span>
+  </div>
+  <button class="vid" data-id="zh_male_m191_uranus_bigtts" title="点击复制">
+    <code>zh_male_m191_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">王牌男声，中低音沉稳，适合讲解和旁白</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card rec3" data-vendor="doubao"
+  data-text="zh_male_taocheng_uranus_bigtts 小天 2.0 青年男声，有点少年感，不沉闷 通用">
+  <div class="chead">
+    <h3>小天 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★★</span>
+  </div>
+  <button class="vid" data-id="zh_male_taocheng_uranus_bigtts" title="点击复制">
+    <code>zh_male_taocheng_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">青年男声，有点少年感，不沉闷</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_male_liufei_uranus_bigtts 刘飞 2.0 标准男声，平实耐听，长时间听不累 通用">
+  <div class="chead">
+    <h3>刘飞 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="zh_male_liufei_uranus_bigtts" title="点击复制">
+    <code>zh_male_liufei_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">标准男声，平实耐听，长时间听不累</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_sophie_uranus_bigtts 魅力苏菲 2.0 魅力苏菲，成熟有磁性，气质女声 通用">
+  <div class="chead">
+    <h3>魅力苏菲 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="zh_female_sophie_uranus_bigtts" title="点击复制">
+    <code>zh_female_sophie_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">魅力苏菲，成熟有磁性，气质女声</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card rec3" data-vendor="doubao"
+  data-text="zh_female_qingxinnvsheng_uranus_bigtts 清新女声 2.0 清新女声，干净清爽不甜腻 通用">
+  <div class="chead">
+    <h3>清新女声 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★★</span>
+  </div>
+  <button class="vid" data-id="zh_female_qingxinnvsheng_uranus_bigtts" title="点击复制">
+    <code>zh_female_qingxinnvsheng_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">清新女声，干净清爽不甜腻</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_cancan_uranus_bigtts 知性灿灿 2.0 知性灿灿，温柔有分寸，像个靠谱的姐姐 通用">
+  <div class="chead">
+    <h3>知性灿灿 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="zh_female_cancan_uranus_bigtts" title="点击复制">
+    <code>zh_female_cancan_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">知性灿灿，温柔有分寸，像个靠谱的姐姐</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_sajiaoxuemei_uranus_bigtts 撒娇学妹 2.0 撒娇学妹，甜腻黏人，撒娇专用 角色">
+  <div class="chead">
+    <h3>撒娇学妹 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_female_sajiaoxuemei_uranus_bigtts" title="点击复制">
+    <code>zh_female_sajiaoxuemei_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">撒娇学妹，甜腻黏人，撒娇专用</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">角色</span>
+  </div>
+</article>
+<article class="card rec3" data-vendor="doubao"
+  data-text="zh_female_tianmeixiaoyuan_uranus_bigtts 甜美小源 2.0 甜美小源，甜但不过分，少女感足 通用">
+  <div class="chead">
+    <h3>甜美小源 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★★</span>
+  </div>
+  <button class="vid" data-id="zh_female_tianmeixiaoyuan_uranus_bigtts" title="点击复制">
+    <code>zh_female_tianmeixiaoyuan_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">甜美小源，甜但不过分，少女感足</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_tianmeitaozi_uranus_bigtts 甜美桃子 2.0 甜美桃子，比小源再软一点 通用">
+  <div class="chead">
+    <h3>甜美桃子 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="zh_female_tianmeitaozi_uranus_bigtts" title="点击复制">
+    <code>zh_female_tianmeitaozi_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">甜美桃子，比小源再软一点</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card rec3" data-vendor="doubao"
+  data-text="zh_female_shuangkuaisisi_uranus_bigtts 爽快思思 2.0 爽快思思，语速快、干脆利落，适合快节奏 通用">
+  <div class="chead">
+    <h3>爽快思思 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★★</span>
+  </div>
+  <button class="vid" data-id="zh_female_shuangkuaisisi_uranus_bigtts" title="点击复制">
+    <code>zh_female_shuangkuaisisi_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">爽快思思，语速快、干脆利落，适合快节奏</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_peiqi_uranus_bigtts 佩奇猪 2.0 小猪佩奇同款动画音，搞怪用 角色">
+  <div class="chead">
+    <h3>佩奇猪 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_female_peiqi_uranus_bigtts" title="点击复制">
+    <code>zh_female_peiqi_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">小猪佩奇同款动画音，搞怪用</p>
+  <div class="tags">
+    <span class="tag g-k">童</span>
+    <span class="tag">角色</span>
+  </div>
+</article>
+<article class="card rec3" data-vendor="doubao"
+  data-text="zh_female_linjianvhai_uranus_bigtts 邻家女孩 2.0 邻家女孩，亲切自然，没有播音腔 通用">
+  <div class="chead">
+    <h3>邻家女孩 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★★</span>
+  </div>
+  <button class="vid" data-id="zh_female_linjianvhai_uranus_bigtts" title="点击复制">
+    <code>zh_female_linjianvhai_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">邻家女孩，亲切自然，没有播音腔</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_male_shaonianzixin_uranus_bigtts 少年梓辛 2.0 少年梓辛，少年音，干净透亮 通用">
+  <div class="chead">
+    <h3>少年梓辛 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="zh_male_shaonianzixin_uranus_bigtts" title="点击复制">
+    <code>zh_male_shaonianzixin_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">少年梓辛，少年音，干净透亮</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_male_sunwukong_uranus_bigtts 猴哥 2.0 猴哥，孙悟空腔调，一开口就有戏 角色">
+  <div class="chead">
+    <h3>猴哥 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_male_sunwukong_uranus_bigtts" title="点击复制">
+    <code>zh_male_sunwukong_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">猴哥，孙悟空腔调，一开口就有戏</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">角色</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_yingyujiaoxue_uranus_bigtts Tina老师 2.0 Tina 老师，英语教学口吻，念英文单词很清楚 教育">
+  <div class="chead">
+    <h3>Tina老师 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_female_yingyujiaoxue_uranus_bigtts" title="点击复制">
+    <code>zh_female_yingyujiaoxue_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">Tina 老师，英语教学口吻，念英文单词很清楚</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">教育</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_kefunvsheng_uranus_bigtts 暖阳女声 2.0 暖阳女声，客服场景专用，温和有耐心 客服">
+  <div class="chead">
+    <h3>暖阳女声 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="zh_female_kefunvsheng_uranus_bigtts" title="点击复制">
+    <code>zh_female_kefunvsheng_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">暖阳女声，客服场景专用，温和有耐心</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">客服</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_xiaoxue_uranus_bigtts 儿童绘本 2.0 儿童绘本音，讲睡前故事的口气 童声">
+  <div class="chead">
+    <h3>儿童绘本 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_female_xiaoxue_uranus_bigtts" title="点击复制">
+    <code>zh_female_xiaoxue_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">儿童绘本音，讲睡前故事的口气</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">童声</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_male_dayi_uranus_bigtts 大壹 2.0 大壹，纪录片式的稳重男声 配音">
+  <div class="chead">
+    <h3>大壹 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="zh_male_dayi_uranus_bigtts" title="点击复制">
+    <code>zh_male_dayi_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">大壹，纪录片式的稳重男声</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">配音</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_mizai_uranus_bigtts 黑猫侦探社咪仔 2.0 黑猫侦探社咪仔，悬疑讲述风，压低嗓音 配音">
+  <div class="chead">
+    <h3>黑猫侦探社咪仔 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_female_mizai_uranus_bigtts" title="点击复制">
+    <code>zh_female_mizai_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">黑猫侦探社咪仔，悬疑讲述风，压低嗓音</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">配音</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_jitangnv_uranus_bigtts 鸡汤女 2.0 鸡汤女，情感博主那种娓娓道来 配音">
+  <div class="chead">
+    <h3>鸡汤女 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_female_jitangnv_uranus_bigtts" title="点击复制">
+    <code>zh_female_jitangnv_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">鸡汤女，情感博主那种娓娓道来</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">配音</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_meilinvyou_uranus_bigtts 魅力女友 2.0 魅力女友，黏人女友音 角色">
+  <div class="chead">
+    <h3>魅力女友 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_female_meilinvyou_uranus_bigtts" title="点击复制">
+    <code>zh_female_meilinvyou_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">魅力女友，黏人女友音</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">角色</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_liuchangnv_uranus_bigtts 流畅女声 2.0 流畅女声，顺滑没毛刺，长句不断气 配音">
+  <div class="chead">
+    <h3>流畅女声 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="zh_female_liuchangnv_uranus_bigtts" title="点击复制">
+    <code>zh_female_liuchangnv_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">流畅女声，顺滑没毛刺，长句不断气</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">配音</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_male_ruyayichen_uranus_bigtts 儒雅逸辰 2.0 儒雅逸辰，温和有教养的男声 配音">
+  <div class="chead">
+    <h3>儒雅逸辰 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="zh_male_ruyayichen_uranus_bigtts" title="点击复制">
+    <code>zh_male_ruyayichen_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">儒雅逸辰，温和有教养的男声</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">配音</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_wenroumama_uranus_bigtts 温柔妈妈 2.0 温柔妈妈，母亲哄孩子那种语气 角色">
+  <div class="chead">
+    <h3>温柔妈妈 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_female_wenroumama_uranus_bigtts" title="点击复制">
+    <code>zh_female_wenroumama_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">温柔妈妈，母亲哄孩子那种语气</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">角色</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_male_jieshuoxiaoming_uranus_bigtts 解说小明 2.0 解说小明，赛事解说节奏，语速偏快 解说">
+  <div class="chead">
+    <h3>解说小明 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="zh_male_jieshuoxiaoming_uranus_bigtts" title="点击复制">
+    <code>zh_male_jieshuoxiaoming_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">解说小明，赛事解说节奏，语速偏快</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">解说</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_tvbnv_uranus_bigtts TVB女声 2.0 TVB 女声，港剧配音腔，很抓耳 配音">
+  <div class="chead">
+    <h3>TVB女声 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_female_tvbnv_uranus_bigtts" title="点击复制">
+    <code>zh_female_tvbnv_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">TVB 女声，港剧配音腔，很抓耳</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">配音</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_male_yizhipiannan_uranus_bigtts 译制片男 2.0 译制片男，老译制片那种字正腔圆 配音">
+  <div class="chead">
+    <h3>译制片男 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_male_yizhipiannan_uranus_bigtts" title="点击复制">
+    <code>zh_male_yizhipiannan_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">译制片男，老译制片那种字正腔圆</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">配音</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_qiaopinv_uranus_bigtts 俏皮女声 2.0 俏皮女声，灵动带点小坏 通用">
+  <div class="chead">
+    <h3>俏皮女声 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="zh_female_qiaopinv_uranus_bigtts" title="点击复制">
+    <code>zh_female_qiaopinv_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">俏皮女声，灵动带点小坏</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_zhishuaiyingzi_uranus_bigtts 直率英子 2.0 直率英子，说话直来直去，抖音同款 角色">
+  <div class="chead">
+    <h3>直率英子 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="zh_female_zhishuaiyingzi_uranus_bigtts" title="点击复制">
+    <code>zh_female_zhishuaiyingzi_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">直率英子，说话直来直去，抖音同款</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">角色</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_male_linjiananhai_uranus_bigtts 邻家男孩 2.0 邻家男孩，普通男生说话的感觉 通用">
+  <div class="chead">
+    <h3>邻家男孩 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="zh_male_linjiananhai_uranus_bigtts" title="点击复制">
+    <code>zh_male_linjiananhai_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">邻家男孩，普通男生说话的感觉</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_male_silang_uranus_bigtts 四郎 2.0 四郎，古装剧台词腔，气场足 角色">
+  <div class="chead">
+    <h3>四郎 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_male_silang_uranus_bigtts" title="点击复制">
+    <code>zh_male_silang_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">四郎，古装剧台词腔，气场足</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">角色</span>
+  </div>
+</article>
+<article class="card rec3" data-vendor="doubao"
+  data-text="zh_male_ruyaqingnian_uranus_bigtts 儒雅青年 2.0 儒雅青年，番茄小说常用，有声书标配 有声书">
+  <div class="chead">
+    <h3>儒雅青年 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★★</span>
+  </div>
+  <button class="vid" data-id="zh_male_ruyaqingnian_uranus_bigtts" title="点击复制">
+    <code>zh_male_ruyaqingnian_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">儒雅青年，番茄小说常用，有声书标配</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">有声书</span>
+  </div>
+</article>
+<article class="card rec3" data-vendor="doubao"
+  data-text="zh_male_qingcang_uranus_bigtts 擎苍 2.0 擎苍，低沉厚重，念武侠玄幻很带感 有声书">
+  <div class="chead">
+    <h3>擎苍 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★★</span>
+  </div>
+  <button class="vid" data-id="zh_male_qingcang_uranus_bigtts" title="点击复制">
+    <code>zh_male_qingcang_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">擎苍，低沉厚重，念武侠玄幻很带感</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">有声书</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_male_xionger_uranus_bigtts 熊二 2.0 熊二，憨憨的动画角色音 角色">
+  <div class="chead">
+    <h3>熊二 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_male_xionger_uranus_bigtts" title="点击复制">
+    <code>zh_male_xionger_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">熊二，憨憨的动画角色音</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">角色</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_yingtaowanzi_uranus_bigtts 樱桃丸子 2.0 樱桃丸子，小丸子同款，撒娇耍赖 角色">
+  <div class="chead">
+    <h3>樱桃丸子 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_female_yingtaowanzi_uranus_bigtts" title="点击复制">
+    <code>zh_female_yingtaowanzi_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">樱桃丸子，小丸子同款，撒娇耍赖</p>
+  <div class="tags">
+    <span class="tag g-k">童</span>
+    <span class="tag">角色</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_male_wennuanahu_uranus_bigtts 温暖阿虎 2.0 温暖阿虎，声音厚实有安全感 通用">
+  <div class="chead">
+    <h3>温暖阿虎 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="zh_male_wennuanahu_uranus_bigtts" title="点击复制">
+    <code>zh_male_wennuanahu_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">温暖阿虎，声音厚实有安全感</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_male_naiqimengwa_uranus_bigtts 奶气萌娃 2.0 奶气萌娃，奶声奶气的小孩 童声">
+  <div class="chead">
+    <h3>奶气萌娃 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_male_naiqimengwa_uranus_bigtts" title="点击复制">
+    <code>zh_male_naiqimengwa_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">奶气萌娃，奶声奶气的小孩</p>
+  <div class="tags">
+    <span class="tag g-k">童</span>
+    <span class="tag">童声</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_popo_uranus_bigtts 婆婆 2.0 婆婆，老年女性，慢悠悠的 角色">
+  <div class="chead">
+    <h3>婆婆 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_female_popo_uranus_bigtts" title="点击复制">
+    <code>zh_female_popo_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">婆婆，老年女性，慢悠悠的</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">角色</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_gaolengyujie_uranus_bigtts 高冷御姐 2.0 高冷御姐，冷淡有距离感 角色">
+  <div class="chead">
+    <h3>高冷御姐 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="zh_female_gaolengyujie_uranus_bigtts" title="点击复制">
+    <code>zh_female_gaolengyujie_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">高冷御姐，冷淡有距离感</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">角色</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_male_aojiaobazong_uranus_bigtts 傲娇霸总 2.0 傲娇霸总，霸道总裁那一挂 角色">
+  <div class="chead">
+    <h3>傲娇霸总 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_male_aojiaobazong_uranus_bigtts" title="点击复制">
+    <code>zh_male_aojiaobazong_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">傲娇霸总，霸道总裁那一挂</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">角色</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_male_lanyinmianbao_uranus_bigtts 懒音绵宝 2.0 懒音绵宝，慵懒拖着尾音 角色">
+  <div class="chead">
+    <h3>懒音绵宝 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_male_lanyinmianbao_uranus_bigtts" title="点击复制">
+    <code>zh_male_lanyinmianbao_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">懒音绵宝，慵懒拖着尾音</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">角色</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_male_fanjuanqingnian_uranus_bigtts 反卷青年 2.0 反卷青年，松弛不紧不慢 通用">
+  <div class="chead">
+    <h3>反卷青年 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="zh_male_fanjuanqingnian_uranus_bigtts" title="点击复制">
+    <code>zh_male_fanjuanqingnian_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">反卷青年，松弛不紧不慢</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card rec3" data-vendor="doubao"
+  data-text="zh_female_wenroushunv_uranus_bigtts 温柔淑女 2.0 温柔淑女，番茄小说同款，柔而不腻 有声书">
+  <div class="chead">
+    <h3>温柔淑女 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★★</span>
+  </div>
+  <button class="vid" data-id="zh_female_wenroushunv_uranus_bigtts" title="点击复制">
+    <code>zh_female_wenroushunv_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">温柔淑女，番茄小说同款，柔而不腻</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">有声书</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_gufengshaoyu_uranus_bigtts 古风少御 2.0 古风少御，念古风文案很有味道 角色">
+  <div class="chead">
+    <h3>古风少御 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_female_gufengshaoyu_uranus_bigtts" title="点击复制">
+    <code>zh_female_gufengshaoyu_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">古风少御，念古风文案很有味道</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">角色</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_male_huolixiaoge_uranus_bigtts 活力小哥 2.0 活力小哥，精神头足 通用">
+  <div class="chead">
+    <h3>活力小哥 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="zh_male_huolixiaoge_uranus_bigtts" title="点击复制">
+    <code>zh_male_huolixiaoge_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">活力小哥，精神头足</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_male_baqiqingshu_uranus_bigtts 霸气青叔 2.0 霸气青叔，中年磁性男声，有声书爱用 有声书">
+  <div class="chead">
+    <h3>霸气青叔 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="zh_male_baqiqingshu_uranus_bigtts" title="点击复制">
+    <code>zh_male_baqiqingshu_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">霸气青叔，中年磁性男声，有声书爱用</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">有声书</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_male_xuanyijieshuo_uranus_bigtts 悬疑解说 2.0 悬疑解说，故意压着嗓子制造紧张 解说">
+  <div class="chead">
+    <h3>悬疑解说 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_male_xuanyijieshuo_uranus_bigtts" title="点击复制">
+    <code>zh_male_xuanyijieshuo_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">悬疑解说，故意压着嗓子制造紧张</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">解说</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_mengyatou_uranus_bigtts 萌丫头 2.0 萌丫头，软萌小女生 通用">
+  <div class="chead">
+    <h3>萌丫头 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="zh_female_mengyatou_uranus_bigtts" title="点击复制">
+    <code>zh_female_mengyatou_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">萌丫头，软萌小女生</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card rec3" data-vendor="doubao"
+  data-text="zh_female_tiexinnvsheng_uranus_bigtts 贴心女声 2.0 贴心女声，像朋友在跟你说话 通用">
+  <div class="chead">
+    <h3>贴心女声 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★★</span>
+  </div>
+  <button class="vid" data-id="zh_female_tiexinnvsheng_uranus_bigtts" title="点击复制">
+    <code>zh_female_tiexinnvsheng_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">贴心女声，像朋友在跟你说话</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_jitangmei_uranus_bigtts 鸡汤妹妹 2.0 鸡汤妹妹，情感电台那个调调 配音">
+  <div class="chead">
+    <h3>鸡汤妹妹 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_female_jitangmei_uranus_bigtts" title="点击复制">
+    <code>zh_female_jitangmei_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">鸡汤妹妹，情感电台那个调调</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">配音</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_male_cixingjieshuonan_uranus_bigtts 磁性解说男声 2.0 磁性解说男声，低音炮，念旁白很稳 解说">
+  <div class="chead">
+    <h3>磁性解说男声 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="zh_male_cixingjieshuonan_uranus_bigtts" title="点击复制">
+    <code>zh_male_cixingjieshuonan_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">磁性解说男声，低音炮，念旁白很稳</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">解说</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_male_liangsangmengzai_uranus_bigtts 亮嗓萌仔 2.0 亮嗓萌仔，声音亮，穿透力强 通用">
+  <div class="chead">
+    <h3>亮嗓萌仔 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="zh_male_liangsangmengzai_uranus_bigtts" title="点击复制">
+    <code>zh_male_liangsangmengzai_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">亮嗓萌仔，声音亮，穿透力强</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card rec3" data-vendor="doubao"
+  data-text="zh_female_kailangjiejie_uranus_bigtts 开朗姐姐 2.0 开朗姐姐，热情不冷场 通用">
+  <div class="chead">
+    <h3>开朗姐姐 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★★</span>
+  </div>
+  <button class="vid" data-id="zh_female_kailangjiejie_uranus_bigtts" title="点击复制">
+    <code>zh_female_kailangjiejie_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">开朗姐姐，热情不冷场</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_male_gaolengchenwen_uranus_bigtts 高冷沉稳 2.0 高冷沉稳，话不多但有分量 通用">
+  <div class="chead">
+    <h3>高冷沉稳 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="zh_male_gaolengchenwen_uranus_bigtts" title="点击复制">
+    <code>zh_male_gaolengchenwen_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">高冷沉稳，话不多但有分量</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_male_shenyeboke_uranus_bigtts 深夜播客 2.0 深夜播客，深夜电台那种轻声细语 配音">
+  <div class="chead">
+    <h3>深夜播客 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_male_shenyeboke_uranus_bigtts" title="点击复制">
+    <code>zh_male_shenyeboke_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">深夜播客，深夜电台那种轻声细语</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">配音</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_male_lubanqihao_uranus_bigtts 鲁班七号 2.0 鲁班七号，王者荣耀角色音，活泼跳脱 角色">
+  <div class="chead">
+    <h3>鲁班七号 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_male_lubanqihao_uranus_bigtts" title="点击复制">
+    <code>zh_male_lubanqihao_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">鲁班七号，王者荣耀角色音，活泼跳脱</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">角色</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_jiaochuannv_uranus_bigtts 娇喘女声 2.0 娇喘女声，甜腻发嗲 角色">
+  <div class="chead">
+    <h3>娇喘女声 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度"></span>
+  </div>
+  <button class="vid" data-id="zh_female_jiaochuannv_uranus_bigtts" title="点击复制">
+    <code>zh_female_jiaochuannv_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">娇喘女声，甜腻发嗲</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">角色</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_linxiao_uranus_bigtts 林潇 2.0 林潇，抖音同款角色音 角色">
+  <div class="chead">
+    <h3>林潇 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_female_linxiao_uranus_bigtts" title="点击复制">
+    <code>zh_female_linxiao_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">林潇，抖音同款角色音</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">角色</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_lingling_uranus_bigtts 玲玲姐姐 2.0 玲玲姐姐，豆包同款，亲切小姐姐 角色">
+  <div class="chead">
+    <h3>玲玲姐姐 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="zh_female_lingling_uranus_bigtts" title="点击复制">
+    <code>zh_female_lingling_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">玲玲姐姐，豆包同款，亲切小姐姐</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">角色</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_chunribu_uranus_bigtts 春日部姐姐 2.0 春日部姐姐，蜡笔小新里的感觉 角色">
+  <div class="chead">
+    <h3>春日部姐姐 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_female_chunribu_uranus_bigtts" title="点击复制">
+    <code>zh_female_chunribu_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">春日部姐姐，蜡笔小新里的感觉</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">角色</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_male_tangseng_uranus_bigtts 唐僧 2.0 唐僧，絮絮叨叨的师父腔 角色">
+  <div class="chead">
+    <h3>唐僧 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_male_tangseng_uranus_bigtts" title="点击复制">
+    <code>zh_male_tangseng_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">唐僧，絮絮叨叨的师父腔</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">角色</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_male_zhuangzhou_uranus_bigtts 庄周 2.0 庄周，王者角色，飘忽慵懒 角色">
+  <div class="chead">
+    <h3>庄周 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_male_zhuangzhou_uranus_bigtts" title="点击复制">
+    <code>zh_male_zhuangzhou_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">庄周，王者角色，飘忽慵懒</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">角色</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_male_kailangdidi_uranus_bigtts 开朗弟弟 2.0 开朗弟弟，阳光小弟 通用">
+  <div class="chead">
+    <h3>开朗弟弟 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="zh_male_kailangdidi_uranus_bigtts" title="点击复制">
+    <code>zh_male_kailangdidi_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">开朗弟弟，阳光小弟</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_male_zhubajie_uranus_bigtts 猪八戒 2.0 猪八戒，憨厚贪吃的角色音 角色">
+  <div class="chead">
+    <h3>猪八戒 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_male_zhubajie_uranus_bigtts" title="点击复制">
+    <code>zh_male_zhubajie_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">猪八戒，憨厚贪吃的角色音</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">角色</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_ganmaodianyin_uranus_bigtts 感冒电音姐姐 2.0 感冒电音姐姐，鼻音加电音，搞怪专用 趣味">
+  <div class="chead">
+    <h3>感冒电音姐姐 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_female_ganmaodianyin_uranus_bigtts" title="点击复制">
+    <code>zh_female_ganmaodianyin_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">感冒电音姐姐，鼻音加电音，搞怪专用</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">趣味</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_chanmeinv_uranus_bigtts 谄媚女声 2.0 谄媚女声，讨好奉承的语气 角色">
+  <div class="chead">
+    <h3>谄媚女声 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度"></span>
+  </div>
+  <button class="vid" data-id="zh_female_chanmeinv_uranus_bigtts" title="点击复制">
+    <code>zh_female_chanmeinv_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">谄媚女声，讨好奉承的语气</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">角色</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_nvleishen_uranus_bigtts 女雷神 2.0 女雷神，声音有力量感，很飒 角色">
+  <div class="chead">
+    <h3>女雷神 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_female_nvleishen_uranus_bigtts" title="点击复制">
+    <code>zh_female_nvleishen_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">女雷神，声音有力量感，很飒</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">角色</span>
+  </div>
+</article>
+<article class="card rec3" data-vendor="doubao"
+  data-text="zh_female_qinqienv_uranus_bigtts 亲切女声 2.0 亲切女声，豆包同款，像熟人 通用">
+  <div class="chead">
+    <h3>亲切女声 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★★</span>
+  </div>
+  <button class="vid" data-id="zh_female_qinqienv_uranus_bigtts" title="点击复制">
+    <code>zh_female_qinqienv_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">亲切女声，豆包同款，像熟人</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_male_kuailexiaodong_uranus_bigtts 快乐小东 2.0 快乐小东，语气轻快带笑 通用">
+  <div class="chead">
+    <h3>快乐小东 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="zh_male_kuailexiaodong_uranus_bigtts" title="点击复制">
+    <code>zh_male_kuailexiaodong_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">快乐小东，语气轻快带笑</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_male_kailangxuezhang_uranus_bigtts 开朗学长 2.0 开朗学长，阳光学长范儿 通用">
+  <div class="chead">
+    <h3>开朗学长 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="zh_male_kailangxuezhang_uranus_bigtts" title="点击复制">
+    <code>zh_male_kailangxuezhang_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">开朗学长，阳光学长范儿</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_male_youyoujunzi_uranus_bigtts 悠悠君子 2.0 悠悠君子，文雅从容 通用">
+  <div class="chead">
+    <h3>悠悠君子 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="zh_male_youyoujunzi_uranus_bigtts" title="点击复制">
+    <code>zh_male_youyoujunzi_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">悠悠君子，文雅从容</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_wenjingmaomao_uranus_bigtts 文静毛毛 2.0 文静毛毛，轻声细语不吵 通用">
+  <div class="chead">
+    <h3>文静毛毛 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="zh_female_wenjingmaomao_uranus_bigtts" title="点击复制">
+    <code>zh_female_wenjingmaomao_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">文静毛毛，轻声细语不吵</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card rec3" data-vendor="doubao"
+  data-text="zh_female_zhixingnv_uranus_bigtts 知性女声 2.0 知性女声，理性克制，播报感 通用">
+  <div class="chead">
+    <h3>知性女声 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★★</span>
+  </div>
+  <button class="vid" data-id="zh_female_zhixingnv_uranus_bigtts" title="点击复制">
+    <code>zh_female_zhixingnv_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">知性女声，理性克制，播报感</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_male_qingshuangnanda_uranus_bigtts 清爽男大 2.0 清爽男大，大学生那个年纪的感觉 通用">
+  <div class="chead">
+    <h3>清爽男大 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="zh_male_qingshuangnanda_uranus_bigtts" title="点击复制">
+    <code>zh_male_qingshuangnanda_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">清爽男大，大学生那个年纪的感觉</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_male_yuanboxiaoshu_uranus_bigtts 渊博小叔 2.0 渊博小叔，像个懂很多的叔叔 通用">
+  <div class="chead">
+    <h3>渊博小叔 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_male_yuanboxiaoshu_uranus_bigtts" title="点击复制">
+    <code>zh_male_yuanboxiaoshu_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">渊博小叔，像个懂很多的叔叔</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card rec3" data-vendor="doubao"
+  data-text="zh_male_yangguangqingnian_uranus_bigtts 阳光青年 2.0 阳光青年，明亮有朝气 通用">
+  <div class="chead">
+    <h3>阳光青年 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★★</span>
+  </div>
+  <button class="vid" data-id="zh_male_yangguangqingnian_uranus_bigtts" title="点击复制">
+    <code>zh_male_yangguangqingnian_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">阳光青年，明亮有朝气</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_qingchezizi_uranus_bigtts 清澈梓梓 2.0 清澈梓梓，声音干净透明 通用">
+  <div class="chead">
+    <h3>清澈梓梓 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="zh_female_qingchezizi_uranus_bigtts" title="点击复制">
+    <code>zh_female_qingchezizi_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">清澈梓梓，声音干净透明</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_tianmeiyueyue_uranus_bigtts 甜美悦悦 2.0 甜美悦悦，甜妹音 通用">
+  <div class="chead">
+    <h3>甜美悦悦 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="zh_female_tianmeiyueyue_uranus_bigtts" title="点击复制">
+    <code>zh_female_tianmeiyueyue_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">甜美悦悦，甜妹音</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_xinlingjitang_uranus_bigtts 心灵鸡汤 2.0 心灵鸡汤，情感安慰的口气 配音">
+  <div class="chead">
+    <h3>心灵鸡汤 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_female_xinlingjitang_uranus_bigtts" title="点击复制">
+    <code>zh_female_xinlingjitang_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">心灵鸡汤，情感安慰的口气</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">配音</span>
+  </div>
+</article>
+<article class="card rec3" data-vendor="doubao"
+  data-text="zh_male_wenrouxiaoge_uranus_bigtts 温柔小哥 2.0 温柔小哥，说话轻，不刺激耳朵 通用">
+  <div class="chead">
+    <h3>温柔小哥 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★★</span>
+  </div>
+  <button class="vid" data-id="zh_male_wenrouxiaoge_uranus_bigtts" title="点击复制">
+    <code>zh_male_wenrouxiaoge_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">温柔小哥，说话轻，不刺激耳朵</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_roumeinvyou_uranus_bigtts 柔美女友 2.0 柔美女友，软软的 角色">
+  <div class="chead">
+    <h3>柔美女友 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_female_roumeinvyou_uranus_bigtts" title="点击复制">
+    <code>zh_female_roumeinvyou_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">柔美女友，软软的</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">角色</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_male_dongfanghaoran_uranus_bigtts 东方浩然 2.0 东方浩然，正气十足的男声 通用">
+  <div class="chead">
+    <h3>东方浩然 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="zh_male_dongfanghaoran_uranus_bigtts" title="点击复制">
+    <code>zh_male_dongfanghaoran_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">东方浩然，正气十足的男声</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card rec3" data-vendor="doubao"
+  data-text="zh_female_wenrouxiaoya_uranus_bigtts 温柔小雅 2.0 温柔小雅，柔和耐听 通用">
+  <div class="chead">
+    <h3>温柔小雅 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★★</span>
+  </div>
+  <button class="vid" data-id="zh_female_wenrouxiaoya_uranus_bigtts" title="点击复制">
+    <code>zh_female_wenrouxiaoya_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">温柔小雅，柔和耐听</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_male_tiancaitongsheng_uranus_bigtts 天才童声 2.0 天才童声，小男孩，清楚利落 童声">
+  <div class="chead">
+    <h3>天才童声 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_male_tiancaitongsheng_uranus_bigtts" title="点击复制">
+    <code>zh_male_tiancaitongsheng_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">天才童声，小男孩，清楚利落</p>
+  <div class="tags">
+    <span class="tag g-k">童</span>
+    <span class="tag">童声</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_wuzetian_uranus_bigtts 武则天 2.0 武则天，女王气场，压得住场 角色">
+  <div class="chead">
+    <h3>武则天 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_female_wuzetian_uranus_bigtts" title="点击复制">
+    <code>zh_female_wuzetian_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">武则天，女王气场，压得住场</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">角色</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_gujie_uranus_bigtts 顾姐 2.0 顾姐，御姐音，抖音同款 角色">
+  <div class="chead">
+    <h3>顾姐 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="zh_female_gujie_uranus_bigtts" title="点击复制">
+    <code>zh_female_gujie_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">顾姐，御姐音，抖音同款</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">角色</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_male_guanggaojieshuo_uranus_bigtts 广告解说 2.0 广告解说，念广告那种快节奏 解说">
+  <div class="chead">
+    <h3>广告解说 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_male_guanggaojieshuo_uranus_bigtts" title="点击复制">
+    <code>zh_male_guanggaojieshuo_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">广告解说，念广告那种快节奏</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">解说</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_shaoergushi_uranus_bigtts 少儿故事 2.0 少儿故事，哄小朋友的口气 童声">
+  <div class="chead">
+    <h3>少儿故事 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_female_shaoergushi_uranus_bigtts" title="点击复制">
+    <code>zh_female_shaoergushi_uranus_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">少儿故事，哄小朋友的口气</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">童声</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_vv_mars_bigtts Vivi（mars 版） Vivi 的 1.0 版本，音色接近但老一版 对照">
+  <div class="chead">
+    <h3>Vivi（mars 版）</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_female_vv_mars_bigtts" title="点击复制">
+    <code>zh_female_vv_mars_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">Vivi 的 1.0 版本，音色接近但老一版</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">对照</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="zh_female_qingxinnvsheng_mars_bigtts 清新女声（mars 版） 清新女声的 1.0 版本 对照">
+  <div class="chead">
+    <h3>清新女声（mars 版）</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="zh_female_qingxinnvsheng_mars_bigtts" title="点击复制">
+    <code>zh_female_qingxinnvsheng_mars_bigtts</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">清新女声的 1.0 版本</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">对照</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="ICL_uranus_zh_female_kefuwanjun_tob 客服婉君 2.0 客服婉君，标准客服音，耐心礼貌 客服">
+  <div class="chead">
+    <h3>客服婉君 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="ICL_uranus_zh_female_kefuwanjun_tob" title="点击复制">
+    <code>ICL_uranus_zh_female_kefuwanjun_tob</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">客服婉君，标准客服音，耐心礼貌</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">客服</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="ICL_uranus_zh_female_aojiaonvyou_tob 傲娇女友 2.0 傲娇女友，嘴上不饶人其实很在意 角色">
+  <div class="chead">
+    <h3>傲娇女友 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="ICL_uranus_zh_female_aojiaonvyou_tob" title="点击复制">
+    <code>ICL_uranus_zh_female_aojiaonvyou_tob</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">傲娇女友，嘴上不饶人其实很在意</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">角色</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="ICL_uranus_zh_female_tiexinnvyou_tob 贴心女友 2.0 贴心女友，软糯体贴，豆包同款 角色">
+  <div class="chead">
+    <h3>贴心女友 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="ICL_uranus_zh_female_tiexinnvyou_tob" title="点击复制">
+    <code>ICL_uranus_zh_female_tiexinnvyou_tob</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">贴心女友，软糯体贴，豆包同款</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">角色</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="ICL_uranus_zh_female_keainvsheng_tob 可爱女生 2.0 可爱女生，撒娇卖萌 角色">
+  <div class="chead">
+    <h3>可爱女生 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="ICL_uranus_zh_female_keainvsheng_tob" title="点击复制">
+    <code>ICL_uranus_zh_female_keainvsheng_tob</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">可爱女生，撒娇卖萌</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">角色</span>
+  </div>
+</article>
+<article class="card rec3" data-vendor="doubao"
+  data-text="ICL_uranus_zh_female_yuanqitianmei_tob 元气甜妹 2.0 元气甜妹，元气满满的甜 通用">
+  <div class="chead">
+    <h3>元气甜妹 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★★</span>
+  </div>
+  <button class="vid" data-id="ICL_uranus_zh_female_yuanqitianmei_tob" title="点击复制">
+    <code>ICL_uranus_zh_female_yuanqitianmei_tob</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">元气甜妹，元气满满的甜</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card rec3" data-vendor="doubao"
+  data-text="ICL_uranus_zh_female_zhixinjiejie_tob 知心姐姐 2.0 知心姐姐，会安慰人的语气 通用">
+  <div class="chead">
+    <h3>知心姐姐 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★★</span>
+  </div>
+  <button class="vid" data-id="ICL_uranus_zh_female_zhixinjiejie_tob" title="点击复制">
+    <code>ICL_uranus_zh_female_zhixinjiejie_tob</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">知心姐姐，会安慰人的语气</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card rec3" data-vendor="doubao"
+  data-text="ICL_uranus_zh_female_wenroubaiyueguang_tob 温柔白月光 2.0 温柔白月光，干净温柔，很多人的心头好 通用">
+  <div class="chead">
+    <h3>温柔白月光 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★★</span>
+  </div>
+  <button class="vid" data-id="ICL_uranus_zh_female_wenroubaiyueguang_tob" title="点击复制">
+    <code>ICL_uranus_zh_female_wenroubaiyueguang_tob</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">温柔白月光，干净温柔，很多人的心头好</p>
+  <div class="tags">
+    <span class="tag g-f">女</span>
+    <span class="tag">通用</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="ICL_uranus_zh_male_badaozongcai_tob 霸道总裁 2.0 霸道总裁，气场全开 角色">
+  <div class="chead">
+    <h3>霸道总裁 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="ICL_uranus_zh_male_badaozongcai_tob" title="点击复制">
+    <code>ICL_uranus_zh_male_badaozongcai_tob</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">霸道总裁，气场全开</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">角色</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="ICL_uranus_zh_male_aojiaogongzi_tob 傲娇公子 2.0 傲娇公子，嘴硬心软 角色">
+  <div class="chead">
+    <h3>傲娇公子 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★☆☆</span>
+  </div>
+  <button class="vid" data-id="ICL_uranus_zh_male_aojiaogongzi_tob" title="点击复制">
+    <code>ICL_uranus_zh_male_aojiaogongzi_tob</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">傲娇公子，嘴硬心软</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">角色</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="ICL_uranus_zh_male_chunzhenxuedi_tob 纯真学弟 2.0 纯真学弟，青涩小伙 角色">
+  <div class="chead">
+    <h3>纯真学弟 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="ICL_uranus_zh_male_chunzhenxuedi_tob" title="点击复制">
+    <code>ICL_uranus_zh_male_chunzhenxuedi_tob</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">纯真学弟，青涩小伙</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">角色</span>
+  </div>
+</article>
+<article class="card" data-vendor="doubao"
+  data-text="ICL_uranus_zh_male_chenwenmingzai_tob 沉稳明仔 2.0 沉稳明仔，客服场景的男声 客服">
+  <div class="chead">
+    <h3>沉稳明仔 2.0</h3>
+    <span class="stars" title="弹幕播报推荐度">★★☆</span>
+  </div>
+  <button class="vid" data-id="ICL_uranus_zh_male_chenwenmingzai_tob" title="点击复制">
+    <code>ICL_uranus_zh_male_chenwenmingzai_tob</code>
+    <span class="cp">复制</span>
+  </button>
+  <p class="desc">沉稳明仔，客服场景的男声</p>
+  <div class="tags">
+    <span class="tag g-m">男</span>
+    <span class="tag">客服</span>
+  </div>
+</article>
+  </div>
+
+  <div class="tip">
+    <b>为什么后缀这么重要？</b><br>
+    豆包的音色是跟服务版本绑定的。开通 2.0 之后，只有 <code>_uranus_bigtts</code> 这一族能用；1.0 的老短名虽然文档里还写着，但调用会返回
+    <code>3001 requested resource not granted</code>。这跟密钥没关系，别去重配 token。<br>
+    表里这些我都逐个跑过了，复制哪个都能出声。
+  </div>
+</section>
+
+<div class="tip" style="background:#f0f7ff;border-color:#cfe4fb;color:#1a4f8a">
+  <b>给弹幕播报挑音色的经验</b><br>
+  · 长时间挂着听，选「清晰 + 不甜腻」的：Vivi 2.0、小何 2.0、清新女声、知性女声、温柔小雅<br>
+  · 想热闹一点：爽快思思（语速快）、开朗姐姐、元气甜妹、龙安欢_v3<br>
+  · 男声里最稳的：云舟 2.0、儒雅青年、擎苍、龙安洋<br>
+  · 角色音（猴哥、熊二、佩奇）第一次听很乐，挂一小时会吵，建议只在特定场合切过去
+</div>
+
+</div>
+
+<div id="toast">已复制</div>
+
+<script>
+const q = document.getElementById('q');
+const cards = [...document.querySelectorAll('.card')];
+const cnt = document.getElementById('cnt');
+const onlyRecBtn = document.getElementById('onlyRec');
+let vendor = 'all';
+let onlyRec = false;
+
+function render() {
+  const kw = q.value.trim().toLowerCase();
+  let shown = 0;
+  cards.forEach(c => {
+    const okV = vendor === 'all' || c.dataset.vendor === vendor;
+    const okK = !kw || c.dataset.text.toLowerCase().includes(kw);
+    const okR = !onlyRec || c.classList.contains('rec3');
+    const show = okV && okK && okR;
+    c.style.display = show ? '' : 'none';
+    if (show) shown++;
+  });
+  cnt.textContent = shown + ' / ' + cards.length;
+
+  // 整段都空了就藏标题
+  ['aliyun', 'doubao'].forEach(v => {
+    const sec = document.getElementById('sec-' + v);
+    const any = cards.some(c => c.dataset.vendor === v && c.style.display !== 'none');
+    sec.style.display = any ? '' : 'none';
+  });
+}
+
+q.addEventListener('input', render);
+document.querySelectorAll('.btn[data-v]').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.btn[data-v]').forEach(x => x.classList.remove('on'));
+    b.classList.add('on');
+    vendor = b.dataset.v;
+    render();
+  });
+});
+onlyRecBtn.addEventListener('click', () => {
+  onlyRec = !onlyRec;
+  onlyRecBtn.classList.toggle('on', onlyRec);
+  render();
+});
+
+// 点击复制
+const toast = document.getElementById('toast');
+let tTimer;
+function showToast(msg) {
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(tTimer);
+  tTimer = setTimeout(() => toast.classList.remove('show'), 1600);
+}
+
+async function copyText(t) {
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(t);
+      return true;
+    }
+  } catch (e) { /* 落到下面兜底 */ }
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = t;
+    ta.style.position = 'fixed';
+    ta.style.top = '-1000px';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    return ok;
+  } catch (e) {
+    return false;
+  }
+}
+
+document.querySelectorAll('.vid').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const id = btn.dataset.id;
+    const ok = await copyText(id);
+    if (ok) {
+      btn.classList.add('done');
+      btn.querySelector('.cp').textContent = '已复制';
+      showToast('已复制 ' + id);
+      setTimeout(() => {
+        btn.classList.remove('done');
+        btn.querySelector('.cp').textContent = '复制';
+      }, 1400);
+    } else {
+      // 写不了剪贴板就替用户选中，按 Ctrl+C 即可
+      const codeEl = btn.querySelector('code');
+      const range = document.createRange();
+      range.selectNodeContents(codeEl);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      showToast('浏览器没给剪贴板权限，已选中，按 Ctrl+C');
+    }
+  });
+});
+
+render();
+</script>
+</body>
+</html>

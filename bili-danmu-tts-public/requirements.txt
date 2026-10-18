@@ -1,0 +1,9 @@
+# Windows 上不用装额外的多媒体库，播放走系统自带的 MCI
+requests>=2.31
+websockets>=12.0
+brotli>=1.1.0
+# 阿里云语音合成用它，官方 SDK
+dashscope>=1.20
+
+# 只在 mac / linux 上需要
+# pygame>=2.5
